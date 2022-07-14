@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입 페이지</title>
+
+     <!-- Bootstrap CSS -->
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <script src="https://kit.fontawesome.com/e5e37fec52.js" crossorigin="anonymous"></script>
+
+    <!-- j-Query -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<!--    jQuery-쿠키 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&family=Nanum+Pen+Script&family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap"
+          rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+        body {
+            background-image: url('https://images.unsplash.com/photo-1477332552946-cfb384aeaf1c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80');
+            background-position: center;
+            background-size: cover;
+            background-repeat: no-repeat;
+
+            height: 100vh;
+        }
+
+        .flex {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .login_btn {
+            margin: 50px 0 0 45px;
+        }
+        .input-box{
+            width: 350px;
+            color: white;
+            font-weight: bold;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0px 0px 6px 0px white;
+            margin-top: 4%;
+        }
+        .login_btn {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+        .login_btn > btn btn-light{
+            width: 100px;
+            display:inline-block;
+        }
+
+    </style>
+
+    <script>
+    $(document).ready(function (){
+
+    })
+
+    function register() {
+        $('#dup').empty();
+        let id = $('#id').val()
+        let pw = $('#pw').val()
+        let name = $('#name').val();
+        if (id == '') {
+            alert('ID를 입력해주세요')
+        } else if (pw == '') {
+            alert('PW를 입력해주세요')
+        } else if (name == '') {
+            alert('name을 입력해주세요')
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/api/register',
+                data: {
+                    id_give: id,
+                    pw_give: pw,
+                    name_give: name
+                },
+                success: function (response) {
+                    console.log(response)
+                    if (response.result) {
+                        let temp_html = `<div style="color: red; margin: -6px 0 10px 40px;">${response.msg}</div>`
+                        $('#dup').append(temp_html)
+                    } else {
+                        alert(response.msg);
+                        location.href = '/login';
+                    }
+                }
+            })
+        }
+
+    }
+
+
+    </script>
+
+</head>
+<body>
+<div class="flex">
+    <h1 style="margin-top: 10%; color: #F0FFFF">환영합니다 :)</h1>
+    <div class="input-box">
+        <div class="row mb-3">
+            <label for="inputEmail3" class="col-sm-2 col-form-label">ID</label>
+            <div class="col-sm-10">
+                <input type="email" class="form-control" id="id">
+            </div>
+        </div>
+        <div id="dup" style="font-size: small"></div>
+        <div class="row mb-3">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">PW</label>
+            <div class="col-sm-10">
+                <input type="password" class="form-control" id="pw">
+            </div>
+        </div>
+        <div id="pw_check_input"></div>
+        <div class="row mb-3">
+            <label for="inputPassword3" class="col-sm-2 col-form-label">name</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" id="name">
+            </div>
+        </div>
+        <div class="login_btn">
+            <button onclick="register();" type="button" class="btn btn-light">회원가입</button>
+            <button onclick="location.href='/login'"; type="button" class="btn btn-light" style="margin-left: 40px">
+                취소
+            </button>
+    </div>
+    </div>
+</div>
+</body>
+</html>

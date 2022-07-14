@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>산책로 선택 페이지</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap"
+          rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!--    jQuery-쿠키 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Jua&family=Nanum+Pen+Script&family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap"
+          rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Gowun Dodum', sans-serif;
+        }
+
+        .wrap {
+            background-image: url("https://cdn.pixabay.com/photo/2019/05/18/14/42/jogging-4211946_960_720.jpg");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .buttons {
+            background-color: rgba(255, 255, 255, 0.5);
+            margin: 20px auto 0px auto;
+            border: 1px solid gray;
+            border-radius: 10px;
+            max-width: 870px;
+            width: 95%;
+            max-height: 400px;
+            box-sizing: border-box;
+        }
+
+        .buttons > button {
+            margin: 10px 10px 10px 10px;
+        }
+
+        .park_list {
+            background-color: rgba(255, 255, 255, 0.5);
+            margin: 20px auto 0px auto;
+            padding: 10px;
+            border: 1px solid gray;
+            border-radius: 10px;
+            max-width: 870px;
+            width: 95%;
+            box-sizing: border-box;
+        }
+
+        .parkName {
+            margin: 30px auto 30px auto;
+        }
+
+        .closeButton {
+            margin-top: 20px;
+            background-color: transparent;
+            border-radius: 5px;
+            border: 1px solid;
+        }
+
+        .seoulImg {
+            max-width: 600px;
+            width: 90%;
+            max-height: 100%;
+            height: 90%;
+            background-image: url("https://cdn.crowdpic.net/detail-thumb/thumb_d_EA698713FB43A572F10161572888A70A.png");
+            background-size: cover;
+            background-position: center;
+        }
+
+        .mapBg {
+            max-width: 600px;
+            width: 60%;
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto 0px auto;
+            border-radius: 20px;
+        }
+
+        .logoutButton {
+            background-color: rgba(255, 255, 255, 0.8);
+            margin-top: 20px;
+            margin-right: 20px;
+            float: right;
+            border-radius: 5px;
+        }
+
+        .title {
+            height: 70px;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                type: "GET",
+                url: "http://openapi.seoul.go.kr:8088/6a4c6750656c6a63363572677a7573/json/SearchParkInfoService/1/132",
+                data: {},
+                success: function (response) {
+                    let list = (response['SearchParkInfoService']['row']); //가져온 api를 배열로 만든다.
+                    let arr = []; //빈 배열 생성
+                    let parkList = new Array(list.length); //가져온 리스트의 크기와 같은 배열생성
+                    for (let i = 0; i < list.length; i++) { //포문을 돌면서 구이름,공원주소,공원이름,설명을 추출하고 parkList에는 4개를 다 넣어주고 arr는 구의이름만 넣어준다.
+                        let gu_name = list[i]['P_ZONE'];
+                        let park_addr = list[i]['P_ADDR'];
+                        let park_name = (list[i]['P_PARK']);
+                        let desc = (list[i]['P_LIST_CONTENT']);
+                        parkList[i] = [gu_name, park_addr, park_name, desc]
+                        arr.push(gu_name)
+                    }
+                    console.log(parkList)//모든 공원에 대한 내용이 잘찍히는지 로그로 찍어봄.
+                    let uniqueSet = new Set(arr);
+                    let uniqueArr = [...new Set(arr)]; // ... : 스프레드 연산자
+                    uniqueArr.pop(); //arr에 들어있는 구의 이름들의 중복된 값들은 없앤다.
+                    for (let i = 0; i < uniqueArr.length; i++) { //구의 이름이 들은 리스트를 돌면서 버튼html을 만들어준다.
+                        let button_html = `<button onclick="openList(${i})" type="button" class="btn btn-primary">${uniqueArr[i]}</button>`;
+                        $('#buttons').append(button_html);
+                        let parkList_html = `
+                        <div id="${i}">
+                            <h2 id="gu_name">${uniqueArr[i]}</h2>
+                            <div id="parkName${i}"></div>
+                            <button onclick="closeList(${i})" type="button" class="btn btn-dark">닫기</button>
+                        </div>`; //구에 대한걸 만들어준다.
+                        $('#park_list').append(parkList_html);
+                        $('#' + i).hide(); //모든 공원리스트를 숨깁니다.
+                        for (let j = 0; j < parkList.length; j++) {
+                            if (uniqueArr[i] == parkList[j][0]) {
+                                let park_name = parkList[j][2];
+                                let park_addr = parkList[j][1];
+                                let gu_name = parkList[j][0];
+                                let park_desc = parkList[j][3];
+                                let temp_html = `<div class=parkName>
+                                <h6 class="nameAddr">${park_name} (${park_addr})</h6>
+                                <button onclick=sendData('${park_name}') type="button" class="btn btn-outline-dark">상세보기</button>
+                                <hr>
+                                <div>`
+                                $('#parkName' + i).append(temp_html);
+                            }
+                        }
+                    }
+                }
+            })
+        });
+
+        function sendData(park_name) {
+            localStorage.setItem('park_name', park_name);
+            window.location.href = "/review/" + park_name;
+        }
+
+        function openList(number) {
+            $('#' + number).show();
+            for (let i = 0; i <= 26; i++) {
+                if (number == i) {
+                    continue;
+                }
+                $('#' + i).hide();
+            }
+        }
+
+        function closeList(number) {
+            $('#' + number).hide()
+        }
+
+        function sing_out() {
+            $.removeCookie('mytoken', {path: '/'});
+            alert('로그아웃!')
+            window.location.href = '/'
+        }
+    </script>
+</head>
+<body class="wrap">
+<div class="title">
+    <button class="logoutButton" onclick="sing_out()">로그아웃</button>
+</div>
+<div class="mapBg">
+    <div class="seoulImg">
+    </div>
+</div>
+<div class="park_list" id="park_list">
+</div>
+<div class="buttons" id="buttons">
+</div>
+</body>
+</html>

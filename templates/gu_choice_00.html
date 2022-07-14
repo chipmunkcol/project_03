@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>산책로 선택 페이지</title>
+    <title>공원 선택 페이지</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@200;300;400;500;600;700;900&display=swap"
           rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -19,7 +19,7 @@
         }
 
         .wrap {
-            background-image: url("https://cdn.pixabay.com/photo/2019/05/18/14/42/jogging-4211946_960_720.jpg");
+            background-image: url("https://images.unsplash.com/photo-1613931372190-b067a12f73b6?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NTl8fHdhbGtpbmd8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60");
             background-size: cover;
             background-position: center;
         }
@@ -40,7 +40,7 @@
         }
 
         .park_list {
-            background-color: rgba(255, 255, 255, 0.5);
+            background-color: rgba(255, 255, 255, 0.8);
             margin: 20px auto 0px auto;
             padding: 10px;
             border: 1px solid gray;
@@ -62,7 +62,7 @@
         }
 
         .seoulImg {
-            max-width: 600px;
+            max-width: 500px;
             width: 90%;
             max-height: 100%;
             height: 90%;
@@ -75,24 +75,32 @@
             max-width: 600px;
             width: 60%;
             height: 500px;
+
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+
             margin: 20px auto 0px auto;
             border-radius: 20px;
         }
 
         .logoutButton {
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.6);
             margin-top: 20px;
             margin-right: 20px;
-            float: right;
             border-radius: 5px;
+        }
+        .btnDiv{
+            height: 50px;
+            width: 100%
         }
 
         .title {
-            height: 70px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
     </style>
     <script>
@@ -118,7 +126,7 @@
                     let uniqueArr = [...new Set(arr)]; // ... : 스프레드 연산자
                     uniqueArr.pop(); //arr에 들어있는 구의 이름들의 중복된 값들은 없앤다.
                     for (let i = 0; i < uniqueArr.length; i++) { //구의 이름이 들은 리스트를 돌면서 버튼html을 만들어준다.
-                        let button_html = `<button onclick="openList(${i})" type="button" class="btn btn-primary">${uniqueArr[i]}</button>`;
+                        let button_html = `<button onclick="openList(${i})" type="button" class="btn btn-success">${uniqueArr[i]}</button>`;
                         $('#buttons').append(button_html);
                         let parkList_html = `
                         <div id="${i}">
@@ -173,17 +181,25 @@
         }
     </script>
 </head>
+
 <body class="wrap">
-<div class="title">
-    <button class="logoutButton" onclick="sing_out()">로그아웃</button>
-</div>
-<div class="mapBg">
-    <div class="seoulImg">
+    <div class="btnDiv">
+        <button style="float:right" class="logoutButton" onclick="sing_out()">로그아웃</button>
     </div>
-</div>
-<div class="park_list" id="park_list">
-</div>
-<div class="buttons" id="buttons">
-</div>
+    <div class="title">
+        <h1 style="margin-top:20px; color: #F0FFFF">🚶 걸어, 개발자야 &#128099;</h1>
+    </div>
+
+    <div class="mapBg">
+        <div class="seoulImg">
+        </div>
+    </div>
+
+    <div class="park_list" id="park_list">
+    </div>
+
+    <div class="buttons" id="buttons">
+    </div>
 </body>
+
 </html>
